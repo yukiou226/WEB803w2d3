@@ -18,7 +18,7 @@ export default function NavBar(props) {
                 </h1>
                 
                 <p className="text-white">
-                <Link to="/showcart">
+                <Link to="/cart" className="text-white">
                     <FontAwesomeIcon icon={faShoppingCart} className="fas fa-lg mx-3 text-white"/>
                 </Link>
                 <span className="font-weight-bold text-white">{props.totalValue}</span> items</p>
@@ -31,7 +31,7 @@ export default function NavBar(props) {
                     onIncrement={props.handleIncrement}
                     onDecrement={props.handleDecrement}
                 />} />
-                <Route path="/showcart" element={
+                <Route path="/cart" element={
                     <Cart prods={props.prods}/>
                 } />
             </Routes>

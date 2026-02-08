@@ -1,105 +1,89 @@
 import { useState } from "react";
-import { Modal } from 'react-bootstrap';
-import { faPlusCircle, faMinusCircle } from "@fortawesome/free-solid-svg-icons";
+import { Modal, Container, Row, Col, Card, Button } from "react-bootstrap";
+import { faPlusCircle, faMinusCircle, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function DisplayProducts(props) {
     const [show, setShow] = useState(false);
-    const [showImge, setShowImge] = useState({});
+    const [activeProduct, setActiveProduct] = useState({});
 
     const handleClose = () => setShow(false);
     const handleShow = (product) => {
         setShow(true);
-        setShowImge(product);
-    }
+        setActiveProduct(product);
+    };
 
     return (
-        <div>
-        {props.products.map(product => {
-            return (
-                <div key={product.id} className="border border-1 p-3">
-                    <h4 className="mx-5">{product.desc}</h4>
-                    <img 
-                        src={product.image} 
-                        width="150" 
-                        alt={product.desc} 
-                        className="mx-5"
-                        onClick={() => handleShow(product)}
-                        />
-                    <button
-                        className="btn btn-secondary mx-2"
-                        onClick={() => props.onIncrement(product)}
-                    >
-                        <FontAwesomeIcon icon={faPlusCircle} className="fas fa-lg" />
-                    </button>
-                    <button
-                        className="btn btn-secondary mx-2"
-                        onClick={() => props.onDecrement(product)}
-                    >
-                    <FontAwesomeIcon icon={faMinusCircle} className="fas fa-lg" />
-                    </button>
-                    <div className="d-inline-block mx-4 text-center">
-                    <span className="d-block mb-2">Quantity</span>
-                    <span id="qty" className="px-3 py-2 border border-3 d-inline-block">{product.value}</span>
-                    </div>
-                </div>
-            )
-        })}
+        <Container className="py-4">
+            <Row xs={1} md={2} lg={4} className="g-4">
+        {props.products.map(product => (
+                <Col key={product.id}>
+                    <Card className="h-100">
+                        <Card.Body>
+                            <Card.Title>{product.desc}</Card.Title>
+                            <div
+                                className="product-image-wrap mb-3"
+                                role="button"
+                                onClick={() => handleShow(product)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleShow(product)}
+                                tabIndex={0}
+                            >
+                                <img
+                                    src={product.image}
+                                    width="150"
+                                    alt={product.desc}
+                                    className="img-fluid rounded cursor-pointer"
+                                />
+                                <span className="product-info-hint">
+                                    <FontAwesomeIcon icon={faInfoCircle} /> Click for details
+                                </span>
+                            </div>
+                            <div className="d-flex align-items-center flex-wrap gap-2">
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-icon"
+                                    onClick={() => props.onDecrement(product)}
+                                    aria-label="Decrease quantity"
+                                >
+                                    <FontAwesomeIcon icon={faMinusCircle} className="fa-lg" />
+                                </Button>
+                                <span id={`qty-${product.id}`} className="px-3 py-2 border rounded d-inline-block">
+                                    {product.value}
+                                </span>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-icon"
+                                    onClick={() => props.onIncrement(product)}
+                                    aria-label="Increase quantity"
+                                >
+                                    <FontAwesomeIcon icon={faPlusCircle} className="fa-lg" />
+                                </Button>
+                                <span className="text-muted small">Quantity</span>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            ))}
+            </Row>
 
-        <Modal show={show} onHide={handleClose}>
-            
+        <Modal show={show} onHide={handleClose} centered>
             <Modal.Header closeButton>
-                <Modal.Title>{showImge.desc}</Modal.Title>
+                <Modal.Title>{activeProduct.desc}</Modal.Title>
             </Modal.Header>
-            
             <Modal.Body>
-                <img 
-                    src={showImge.image} 
-                    width="350" 
-                    alt={showImge.desc} 
-                    className="mx-5"
+                <img
+                    src={activeProduct.image}
+                    width="350"
+                    alt={activeProduct.desc}
+                    className="d-block mx-auto mb-3 img-fluid rounded"
                 />
-
-                <p><span className="text-dark">Ratings:</span> {showImge.ratings}/5</p>
-            
+                <p className="mb-1"><strong>Description:</strong> {activeProduct.desc}</p>
+                <p className="mb-0"><strong>Ratings:</strong> {activeProduct.ratings}/5</p>
             </Modal.Body>
-
         </Modal>
-
-            {/*<Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>Product Details</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                
-                <form onSubmit={submit}>
-                    <label><h5 className="text-info">Rating</h5></label>
-                    <select name="rating" className="d-block">
-                        <option>Select Rating</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                    </select>
-                    <label><h5 className="mt-3 text-info">Comment</h5></label>
-                    <textarea name="comment" className="d-block w-50"></textarea>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
-                            Close
-                        </Button>
-                        <input type="submit" value="Submit" className="btn bg-info" variant="primary" onClick={handleClose} />
-                    </Modal.Footer>
-                </form> 
-            </Modal.Body>*/}
-            {/*<Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                Close
-                </Button>
-                <Button variant="primary" onClick={handleClose}>
-                Submit
-                </Button>
-            </Modal.Footer> 
-            </Modal>*/}
-        </div>
+        </Container>
     )
 }
